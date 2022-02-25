@@ -1,0 +1,14 @@
+﻿@page
+@model QuickDevopsVariableEdit.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+<form asp-page-handler="GotoEdit" method="post">
+   <label>Enter devops orginization Url
+   <input type="text" name="url" value="@Model.VariableClient.organisationUrl" required/></label><br/>
+   <label>Enter project name
+   <input type="text" name="projectName" value="@Model.VariableClient.projectName" required/></label><br/>
+   <label>Enter Personal Access Tokens
+   <input type="text" name="accessToken" value="@Model.VariableClient.token" required/></label><br/>
+   <button>Goto Edit</button>
+</form>
