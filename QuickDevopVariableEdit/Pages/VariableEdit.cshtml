@@ -3,7 +3,7 @@
 @using System.Text.Json.Nodes
 @model VariableEditModel
 @{
-   ViewData["Title"] = "Home page";
+   ViewData["Title"] = "Devops Variable Edit";
    var page = "default";
    var groupName = Request.Query["groupname"];
    var prefix = Request.Query["prefix"];
@@ -14,7 +14,7 @@
 }
 
 <div class="text-center">
-   <h1 class="display-4">@Model.client.organisationUrl/@Model.client.projectName</h1>
+   <h1 class="display-4"><a href="/">@Model.client.organisationUrl/@Model.client.projectName</a></h1>
    <section class="tab">
       @foreach (var node in Model.Variables.value)
       {
@@ -37,7 +37,7 @@
          }
          @if (group != null)
          {
-            if (true || groupName.ToString().EndsWith("-environments-variables"))
+            if (groupName.ToString().EndsWith("-environments-variables"))
             {
                <div class="tab">
                   <a href="?groupname=@(groupName)" class="@(string.IsNullOrEmpty(prefix) ? "active":"")">all</a>
@@ -91,19 +91,22 @@
                   </td>
                </tr>
             </table>
-            <form method="post" asp-page-handler="Copy">
-               <input type="hidden" name="groupname" value="@Model.GroupName" />
-               <input type="hidden" name="prefix" value="@Model.Prefix" />
-               <input type="hidden" name="groupid" value="@group.id" />
-               <label>Copy from prefix
-                  <select name="prefixToCopy">
-                     <option value="dev-">dev</option>
-                     <option value="test-">test</option>
-                     <option value="qa-">qa</option>
-                     <option value="prod-">prod</option>
-                  </select> into @Model.Prefix</label>
-               <button type="submit">Copy</button>
-            </form>
+            @if (groupName.ToString().EndsWith("-environments-variables"))
+            {
+               <form method="post" asp-page-handler="Copy">
+                  <input type="hidden" name="groupname" value="@Model.GroupName" />
+                  <input type="hidden" name="prefix" value="@Model.Prefix" />
+                  <input type="hidden" name="groupid" value="@group.id" />
+                  <label>Copy from prefix
+                     <select name="prefixToCopy">
+                        <option value="dev-">dev</option>
+                        <option value="test-">test</option>
+                        <option value="qa-">qa</option>
+                        <option value="prod-">prod</option>
+                     </select> into @Model.Prefix</label>
+                  <button type="submit">Copy</button>
+               </form>
+            }
          }
       </section>
 
