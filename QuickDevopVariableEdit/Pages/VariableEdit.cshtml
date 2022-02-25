@@ -18,7 +18,7 @@
    <section class="tab">
       @foreach (var node in Model.Variables.value)
       {
-         
+
          <a href="?groupname=@node.name" class="@(groupName == node.name ? "active":"")">@node.name</a>
       }
    </section>
@@ -60,12 +60,12 @@
                               <input type="hidden" name="prefix" value="@Model.Prefix" />
                               <input type="hidden" name="groupid" value="@group.id" />
                               <input type="hidden" name="Key" value="@item.Key" />
-                              <input type="text" name="Value" value="@(item.Value.value)"  />
+                              <input type="text" name="Value" value="@(item.Value.value)" />
                               <button type="submit">save</button>
                            </form>
                         </td>
                         <td>
-                           
+
                            <form method="post" asp-page-handler="Delete">
                               <input type="hidden" name="groupname" value="@Model.GroupName" />
                               <input type="hidden" name="prefix" value="@Model.Prefix" />
@@ -84,25 +84,25 @@
                         <input type="hidden" name="groupname" value="@Model.GroupName" />
                         <input type="hidden" name="prefix" value="@Model.Prefix" />
                         <input type="hidden" name="groupid" value="@group.id" />
-                        <input type="text" name="Key" placeholder="New Key" value="" class="small"/>
-                        <input type="text" name="Value" placeholder="Value" value=""  class="small"/>
+                        <input type="text" name="Key" placeholder="New Key" value="" class="small" />
+                        <input type="text" name="Value" placeholder="Value" value="" class="small" />
                         <button type="submit">save</button>
                      </form>
                   </td>
                </tr>
             </table>
             <form method="post" asp-page-handler="Copy">
-                        <input type="hidden" name="groupname" value="@Model.GroupName" />
-                        <input type="hidden" name="prefix" value="@Model.Prefix" />
-                        <input type="hidden" name="groupid" value="@group.id" />
-                        <label>Copy from prefix
-                        <select name="prefixToCopy">
-                           <option value="dev-">dev</option>
-                           <option value="test-">test</option>
-                           <option value="qa-">qa</option>
-                           <option value="prod-">prod</option>
-                        </select> into @Model.Prefix</label>
-                        <button type="submit">Copy</button>
+               <input type="hidden" name="groupname" value="@Model.GroupName" />
+               <input type="hidden" name="prefix" value="@Model.Prefix" />
+               <input type="hidden" name="groupid" value="@group.id" />
+               <label>Copy from prefix
+                  <select name="prefixToCopy">
+                     <option value="dev-">dev</option>
+                     <option value="test-">test</option>
+                     <option value="qa-">qa</option>
+                     <option value="prod-">prod</option>
+                  </select> into @Model.Prefix</label>
+               <button type="submit">Copy</button>
             </form>
          }
       </section>

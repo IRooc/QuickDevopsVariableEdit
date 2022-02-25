@@ -74,7 +74,7 @@ public class VariableEditModel : PageModel
    }
 
 
-      public async Task<IActionResult> OnPostCopy(string prefixToCopy)
+   public async Task<IActionResult> OnPostCopy(string prefixToCopy)
    {
       Variables = await client.GetVariableGroups();
       var groupId = Request.Form["groupid"];
@@ -84,10 +84,11 @@ public class VariableEditModel : PageModel
       if (group != null)
       {
          var copyVars = group.variables.Where(p => p.Key.StartsWith(prefixToCopy)).ToList();
-         foreach(var cp in copyVars)
+         foreach (var cp in copyVars)
          {
             var key = cp.Key.Replace(prefixToCopy, Prefix);
-            if (!group.variables.ContainsKey(key)){
+            if (!group.variables.ContainsKey(key))
+            {
                group.variables.Add(key, group.variables[cp.Key]);
             }
          }
@@ -96,7 +97,7 @@ public class VariableEditModel : PageModel
 
          if (result)
          {
-           // ViewData["Saved"] = key;
+            // ViewData["Saved"] = key;
          }
 
       }
