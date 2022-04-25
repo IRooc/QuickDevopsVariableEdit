@@ -1,0 +1,17 @@
+﻿@page
+@model QuickDevopsVariableEdit.Pages.SelectxProjectModel
+@{
+    ViewData["Title"] = "Home page";
+}
+  <h1 class="display-4"><a href="/">@Model.VariableClient.organisationUrl</a></h1>
+ 
+@foreach (var project in await Model.GetProjects())
+{
+    <form asp-page-handler="GotoEdit" method="post">
+        <input type="hidden" name="projectName" value="@project.name"/>
+        @project.defaultTeamImageUrl
+        <button>
+            @project.name
+        </button>
+    </form><br/>
+}
