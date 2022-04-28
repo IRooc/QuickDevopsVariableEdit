@@ -15,7 +15,7 @@ namespace QuickDevopsVariableEdit.Pages
 
         public async Task<IEnumerable<TeamProjectReference>> GetProjects()
         {
-            return (await VariableClient.GetProjectList()).value;
+            return (await VariableClient.GetProjectList()).value.OrderBy(p => p.name);
         }
 
         public IActionResult OnPostGotoEdit()

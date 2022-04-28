@@ -48,7 +48,7 @@
                </div>
             }
             <table>
-               @foreach (var item in group.variables)
+               @foreach (var item in group.variables.OrderBy(i => i.Key))
                {
                   if (StringValues.IsNullOrEmpty(prefix) || item.Key.StartsWith(prefix))
                   {
