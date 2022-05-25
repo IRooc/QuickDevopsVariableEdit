@@ -3,113 +3,121 @@
 @using System.Text.Json.Nodes
 @model VariableEditModel
 @{
-   ViewData["Title"] = "Variable Edit";
-   var page = "default";
-   var groupName = Request.Query["groupname"];
-   var prefix = Request.Query["prefix"];
-   if (!StringValues.IsNullOrEmpty(groupName))
-   {
-      page = "group";
-   }
+    ViewData["Title"] = "Variable Edit";
+    var page = "default";
+    var groupName = Request.Query["groupname"];
+    var prefix = Request.Query["prefix"];
+    var saveResult = Request.Query["Result"];
+    var saveKey = string.Empty;
+    if (saveResult == "True")
+    {
+        saveKey = Request.Query["key"];
+    }
+    if (!StringValues.IsNullOrEmpty(groupName))
+    {
+        page = "group";
+    }
 }
 
 <div class="text-center">
-   <h1 class="display-4"><a href="/SelectProject">@Model.client.organisationUrl/@Model.client.projectName</a></h1>
-   <section class="tab">
-      @foreach (var node in Model.Variables.value)
-      {
+    <h1 class="display-4"><a href="/SelectProject">@Model.client.organisationUrl/@Model.client.projectName</a></h1>
+    <section class="tab">
+        @foreach (var node in Model.Variables.value)
+        {
 
-         <a href="?groupname=@node.name" class="@(groupName == node.name ? "active":"")">@node.name</a>
-      }
-   </section>
-   @if (page == "group")
-   {
-      <section>
-         @{
-            VariableGroup group = null;
-         }
-         @foreach (var node in Model.Variables.value)
-         {
-            @if (groupName == node.name)
-            {
-               group = node;
+            <a href="?groupname=@node.name" class="@(groupName == node.name ? "active":"")">@node.name</a>
+        }
+    </section>
+    @if (page == "group")
+    {
+        <section>
+            @{
+                VariableGroup group = null;
             }
-         }
-         @if (group != null)
-         {
-            if (groupName.ToString().EndsWith("-environments-variables"))
+            @foreach (var node in Model.Variables.value)
             {
-               <div class="tab">
-                  <a href="?groupname=@(groupName)" class="@(string.IsNullOrEmpty(prefix) ? "active":"")">all</a>
-                  <a href="?groupname=@(groupName)&prefix=dev-" class="@(prefix == "dev-" ? "active":"")">dev</a>
-                  <a href="?groupname=@(groupName)&prefix=test-" class="@(prefix == "test-" ? "active":"")">test</a>
-                  <a href="?groupname=@(groupName)&prefix=qa-" class="@(prefix == "qa-" ? "active":"")">qa</a>
-                  <a href="?groupname=@(groupName)&prefix=prod-" class="@(prefix == "prod-" ? "active":"")">prod</a>
-               </div>
+                @if (groupName == node.name)
+                {
+                    group = node;
+                }
             }
-            <table>
-               @foreach (var item in group.variables.OrderBy(i => i.Key))
-               {
-                  if (StringValues.IsNullOrEmpty(prefix) || item.Key.StartsWith(prefix))
-                  {
-                     <tr>
-                        <td>@item.Key</td>
-                        <td>
-                           <form method="post" asp-page-handler="Save">
-                              <input type="hidden" name="groupname" value="@Model.GroupName" />
-                              <input type="hidden" name="prefix" value="@Model.Prefix" />
-                              <input type="hidden" name="groupid" value="@group.id" />
-                              <input type="hidden" name="Key" value="@item.Key" />
-                              <input type="text" name="Value" value="@(item.Value.value)" />
-                              <button type="submit">save</button>
-                           </form>
-                        </td>
-                        <td>
+            @if (group != null)
+            {
+                if (groupName.ToString().EndsWith("-environments-variables"))
+                {
+                    <div class="tab">
+                        <a href="?groupname=@(groupName)" class="@(string.IsNullOrEmpty(prefix) ? "active":"")">all</a>
+                        <a href="?groupname=@(groupName)&prefix=dev-" class="@(prefix == "dev-" ? "active":"")">dev</a>
+                        <a href="?groupname=@(groupName)&prefix=test-" class="@(prefix == "test-" ? "active":"")">test</a>
+                        <a href="?groupname=@(groupName)&prefix=qa-" class="@(prefix == "qa-" ? "active":"")">qa</a>
+                        <a href="?groupname=@(groupName)&prefix=prod-" class="@(prefix == "prod-" ? "active":"")">prod</a>
+                    </div>
+                }
+                <table>
+                    @foreach (var item in group.variables.OrderBy(i => i.Key))
+                    {
+                        if (StringValues.IsNullOrEmpty(prefix) || item.Key.StartsWith(prefix))
+                        {
+                            <tr class="@(saveKey == item.Key ? "saved":"")">
+                                <td>@item.Key</td>
+                                <td>
+                                    <form method="post" asp-page-handler="Save">
+                                        <input type="hidden" name="groupname" value="@Model.GroupName" />
+                                        <input type="hidden" name="prefix" value="@Model.Prefix" />
+                                        <input type="hidden" name="groupid" value="@group.id" />
+                                        <input type="hidden" name="Key" value="@item.Key" />
+                                        <input type="text" name="Value" value="@(item.Value.value)" />
+                                        <button type="submit">save</button>
+                                    </form>
+                                </td>
+                                <td>
 
-                           <form method="post" asp-page-handler="Delete">
-                              <input type="hidden" name="groupname" value="@Model.GroupName" />
-                              <input type="hidden" name="prefix" value="@Model.Prefix" />
-                              <input type="hidden" name="groupid" value="@group.id" />
-                              <input type="hidden" name="Key" value="@item.Key" />
-                              <button type="submit">Delete</button>
-                           </form>
+                                    <form method="post" asp-page-handler="Delete">
+                                        <input type="hidden" name="groupname" value="@Model.GroupName" />
+                                        <input type="hidden" name="prefix" value="@Model.Prefix" />
+                                        <input type="hidden" name="groupid" value="@group.id" />
+                                        <input type="hidden" name="Key" value="@item.Key" />
+                                        <button type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    <tr>
+                        <td>New</td>
+                        <td>
+                            <form method="post" asp-page-handler="Save">
+                                <input type="hidden" name="groupname" value="@Model.GroupName" />
+                                <input type="hidden" name="prefix" value="@Model.Prefix" />
+                                <input type="hidden" name="groupid" value="@group.id" />
+                                <input type="text" name="Key" placeholder="New Key" value="" class="small" />
+                                <input type="text" name="Value" placeholder="Value" value="" class="small" />
+                                <button type="submit">save</button>
+                            </form>
                         </td>
-                     </tr>
-                  }
-               }
-               <tr>
-                  <td>New</td>
-                  <td>
-                     <form method="post" asp-page-handler="Save">
+                    </tr>
+                </table>
+                @if (groupName.ToString().EndsWith("-environments-variables"))
+                {
+                    <form method="post" asp-page-handler="Copy">
                         <input type="hidden" name="groupname" value="@Model.GroupName" />
                         <input type="hidden" name="prefix" value="@Model.Prefix" />
                         <input type="hidden" name="groupid" value="@group.id" />
-                        <input type="text" name="Key" placeholder="New Key" value="" class="small" />
-                        <input type="text" name="Value" placeholder="Value" value="" class="small" />
-                        <button type="submit">save</button>
-                     </form>
-                  </td>
-               </tr>
-            </table>
-            @if (groupName.ToString().EndsWith("-environments-variables"))
-            {
-               <form method="post" asp-page-handler="Copy">
-                  <input type="hidden" name="groupname" value="@Model.GroupName" />
-                  <input type="hidden" name="prefix" value="@Model.Prefix" />
-                  <input type="hidden" name="groupid" value="@group.id" />
-                  <label>Copy from prefix
-                     <select name="prefixToCopy">
-                        <option value="dev-">dev</option>
-                        <option value="test-">test</option>
-                        <option value="qa-">qa</option>
-                        <option value="prod-">prod</option>
-                     </select> into @Model.Prefix</label>
-                  <button type="submit">Copy</button>
-               </form>
+                        <label>
+                            Copy from prefix
+                            <select name="prefixToCopy">
+                                <option value="dev-">dev</option>
+                                <option value="test-">test</option>
+                                <option value="qa-">qa</option>
+                                <option value="prod-">prod</option>
+                            </select> into @Model.Prefix
+                        </label>
+                        <button type="submit">Copy</button>
+                    </form>
+                }
             }
-         }
-      </section>
+        </section>
 
-   }
+    }
 
 </div>

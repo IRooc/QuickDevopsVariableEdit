@@ -1,4 +1,33 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿
+{
+    //remember url and key
+    const gotoEditButton = document.getElementById('gotoEdit');
+    if (gotoEditButton) {
+        gotoEditButton.addEventListener('click', () => {
+            const newUrl = document.querySelector('input[name="url"]').value;
+            const newToken = document.querySelector('input[name="accessToken"]').value
+            localStorage.setItem('url', newUrl);
+            localStorage.setItem('token', newToken);
 
-// Write your JavaScript code.
+        });
+        const token = localStorage.getItem('token');
+        const url = localStorage.getItem('url');
+        document.querySelector('input[name="url"]').value = url;
+        document.querySelector('input[name="accessToken"]').value = token;
+    }
+}
+
+
+{
+    //remove saved class
+    const allSaved = document.querySelectorAll('tr.saved');
+    if (allSaved.length > 0) {
+        console.log('saved');
+        for (let i = 0; i < allSaved.length; i++) {
+            const saved = allSaved[i];
+            setTimeout(() => {
+                saved.className = '';
+            }, 2000);
+        }
+    }
+}
