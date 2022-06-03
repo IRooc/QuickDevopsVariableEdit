@@ -1,0 +1,33 @@
+﻿@page
+@model QuickDevopsVariableEdit.Pages.PullRequestsModel
+@{
+    ViewData["Title"] = "Pull Requests";
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>By</th>
+            <th>Project</th>
+            <th>Repository</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var pr in Model.prs)
+    {
+        <tr>
+            <td><a href="@Model.client.organisationUrl/@pr.repository.project.name/_git/@pr.repository.name/pullrequest/@pr.pullRequestid" target="_blank">@pr.title</a></td>
+            <td>@pr.status / @pr.mergeStatus</td>
+            <td>@pr.createdBy.displayName</td>
+            <td>@pr.repository.project.name</td>
+            <td>@pr.repository.name</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<pre style="display:none">
+@System.Text.Json.JsonSerializer.Serialize(Model.prs, new System.Text.Json.JsonSerializerOptions {WriteIndented=true})
+</pre>

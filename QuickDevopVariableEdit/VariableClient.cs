@@ -30,7 +30,7 @@ public class VariableClient
         this.projectName = project;
     }
 
-    public async Task<TeamProjectReferenceList> GetProjectList()
+    public async Task<DevOpsReferenceList> GetProjectList()
     {
         var response = await _client.GetAsync($"{organisationUrl}/_apis/projects?api-version=7.1-preview.4");
         if (response.IsSuccessStatusCode)
@@ -38,11 +38,50 @@ public class VariableClient
             var body = await response.Content.ReadAsStringAsync();
             if (!string.IsNullOrWhiteSpace(body))
             {
-                return JsonConvert.DeserializeObject<TeamProjectReferenceList>(body) ?? throw new ApplicationException($"Invalid body returned {body}");
+                return JsonConvert.DeserializeObject<DevOpsReferenceList>(body) ?? throw new ApplicationException($"Invalid body returned {body}");
             }
         }
         throw new ApplicationException($"Invalid status code returned {response.StatusCode}");
     }
+
+    public async Task<DevOpsReferenceList> GetRepositoryList(string projectName)
+    {
+        //GET https://dev.azure.com/{organization}/{project}/_apis/sourceProviders/{providerName}/repositories?api-version=6.0-preview.1
+        var response = await _client.GetAsync($"{organisationUrl}/{projectName}/_apis/git/repositories?api-version=6.0");
+        if (response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync();
+            if (!string.IsNullOrWhiteSpace(body))
+            {
+                return JsonConvert.DeserializeObject<DevOpsReferenceList>(body) ?? throw new ApplicationException($"Invalid body returned {body}");
+            }
+        }
+        throw new ApplicationException($"Invalid status code returned {response.StatusCode}");
+    }
+    public async Task<PullRequestReferenceList> GetPullRequestList(string repositoryId)
+    {
+        //GET https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{repositoryId}/pullrequests?api-version=7.1-preview.1
+        var response = await _client.GetAsync($"{organisationUrl}/_apis/git/repositories/{repositoryId}/pullrequests?api-version=6.0");
+        var debugbody = await response.Content.ReadAsStringAsync();
+
+        if (response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync();
+            if (!string.IsNullOrWhiteSpace(body))
+            {
+                return JsonConvert.DeserializeObject<PullRequestReferenceList>(body) ?? throw new ApplicationException($"Invalid body returned {body}");
+            }
+        }
+        else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return new PullRequestReferenceList
+            {
+                value = new PullRequestReference[] { }
+            };
+        }
+        throw new ApplicationException($"Invalid status code returned {response.StatusCode}");
+    }
+
 
 
     public async Task<VariableGroupList> GetVariableGroups()
@@ -119,21 +158,45 @@ public class VariableClient
     }
 }
 
-public class TeamProjectReferenceList
+public class DevOpsReferenceList
 {
     public int count { get; set; }
-    public TeamProjectReference[] value { get; set; }
+    public DevOpsReference[] value { get; set; }
 
 }
 
-public class TeamProjectReference
+public class DevOpsReference
 {
+    public string id { get; set; }
     public string name { get; set; }
     public string description { get; set; }
     public string url { get; set; }
     public string defaultTeamImageUrl { get; set; }
+    public DevOpsReference project { get; set; }
 }
 
+public class PullRequestReferenceList
+{
+    public int count { get; set; }
+    public PullRequestReference[] value { get; set; }
+
+}
+
+public class PullRequestReference
+{
+    public string title { get; set; }
+    public int pullRequestid { get; set; }
+    public string url { get; set; }
+    public string status { get; set; }
+    public DevOpsUser createdBy { get; set; }
+    public string mergeStatus { get;set; }
+    public DevOpsReference repository { get; set; }
+}
+public class DevOpsUser
+{
+    public string id { get; set; }
+    public string displayName { get; set; }
+}
 
 public class VariableGroupList
 {

@@ -13,7 +13,7 @@ namespace QuickDevopsVariableEdit.Pages
             VariableClient = keyVaultService;
         }
 
-        public async Task<IEnumerable<TeamProjectReference>> GetProjects()
+        public async Task<IEnumerable<DevOpsReference>> GetProjects()
         {
             return (await VariableClient.GetProjectList()).value.OrderBy(p => p.name);
         }
