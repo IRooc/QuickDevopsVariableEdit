@@ -10,9 +10,9 @@ namespace QuickDevopsVariableEdit;
 public class VariableClient
 {
     private HttpClient _client = new HttpClient();
-    public string organisationUrl;
-    public string projectName;
-    public string token;
+    public string? organisationUrl;
+    public string? projectName;
+    public string? token;
     public VariableClient()
     {
 
@@ -161,78 +161,78 @@ public class VariableClient
 public class DevOpsReferenceList
 {
     public int count { get; set; }
-    public DevOpsReference[] value { get; set; }
+    public DevOpsReference[]? value { get; set; }
 
 }
 
 public class DevOpsReference
 {
-    public string id { get; set; }
-    public string name { get; set; }
-    public string description { get; set; }
-    public string url { get; set; }
-    public string defaultTeamImageUrl { get; set; }
-    public DevOpsReference project { get; set; }
+    public string? id { get; set; }
+    public string? name { get; set; }
+    public string? description { get; set; }
+    public string? url { get; set; }
+    public string? defaultTeamImageUrl { get; set; }
+    public DevOpsReference? project { get; set; }
 }
 
 public class PullRequestReferenceList
 {
     public int count { get; set; }
-    public PullRequestReference[] value { get; set; }
+    public PullRequestReference[]? value { get; set; }
 
 }
 
 public class PullRequestReference
 {
-    public string title { get; set; }
+    public string? title { get; set; }
     public int pullRequestid { get; set; }
-    public string url { get; set; }
-    public string status { get; set; }
-    public DevOpsUser createdBy { get; set; }
-    public string mergeStatus { get;set; }
-    public DevOpsReference repository { get; set; }
+    public string? url { get; set; }
+    public string? status { get; set; }
+    public DevOpsUser? createdBy { get; set; }
+    public string? mergeStatus { get;set; }
+    public DevOpsReference? repository { get; set; }
 }
 public class DevOpsUser
 {
-    public string id { get; set; }
-    public string displayName { get; set; }
+    public string? id { get; set; }
+    public string? displayName { get; set; }
 }
 
 public class VariableGroupList
 {
     public int count { get; set; }
-    public VariableGroup[] value { get; set; }
+    public VariableGroup[]? value { get; set; }
 }
 
 public class VariableGroup
 {
-    public Dictionary<string, VariableValue> variables { get; set; }
+    public Dictionary<string, VariableValue>? variables { get; set; }
     public int id { get; set; }
-    public string type { get; set; }
-    public string name { get; set; }
-    public string description { get; set; }
-    public VariableGroupProjectReference[] variableGroupProjectReferences { get; set; }
+    public string? type { get; set; }
+    public string? name { get; set; }
+    public string? description { get; set; }
+    public VariableGroupProjectReference[]? variableGroupProjectReferences { get; set; }
 }
 public class VariableGroupProjectReference
 {
-    public string description { get; set; }
-    public string name { get; set; }
-    public Projectreference projectReference { get; set; }
+    public string? description { get; set; }
+    public string? name { get; set; }
+    public Projectreference? projectReference { get; set; }
 }
 
 public class Projectreference
 {
-    public string id { get; set; }
-    public string name { get; set; }
+    public string? id { get; set; }
+    public string? name { get; set; }
 }
 public class VariableValue
 {
-    public string value { get; set; }
+    public string? value { get; set; }
 }
 
 public class Modifiedby
 {
-    public string displayName { get; set; }
-    public string id { get; set; }
-    public string uniqueName { get; set; }
+    public string? displayName { get; set; }
+    public string? id { get; set; }
+    public string? uniqueName { get; set; }
 }
