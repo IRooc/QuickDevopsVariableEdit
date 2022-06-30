@@ -31,3 +31,16 @@
         }
     }
 }
+{
+    //add ctrl+click to password fields to show/hide them
+    const pwInputs = document.querySelectorAll('input[type="password"]');
+    for (let i = 0; i < pwInputs.length; i++) {
+        const input = pwInputs[i];
+        input.title = 'Ctrl+click to show'
+        input.addEventListener('click', (e) => {
+            if (e.ctrlKey) {
+                e.target.type = e.target.type == 'text' ? 'password' : 'text';
+            }
+        });
+    }
+}
