@@ -141,13 +141,13 @@ public class VariableClient
         return true;
     }
 
-    public async Task<bool> SaveAllVariables(StringValues groupId, Dictionary<string, VariableValue> variables)
+    public async Task<bool> SaveAllVariables(VariableGroup groupInit)
     {
-        var groupResponse = await _client.GetAsync($"{organisationUrl}/{projectName}/_apis/distributedtask/variablegroups/{groupId}?api-version=7.1-preview.2");
+        var groupResponse = await _client.GetAsync($"{organisationUrl}/{projectName}/_apis/distributedtask/variablegroups/{groupInit.id}?api-version=7.1-preview.2");
         var groupBody = await groupResponse.Content.ReadAsStringAsync();
         var group = JsonConvert.DeserializeObject<VariableGroup>(groupBody);
-        group.variables = variables;
-        var response = await _client.PutAsJsonAsync($"{organisationUrl}/_apis/distributedtask/variablegroups/{groupId}?api-version=7.1-preview.2", group);
+        group.variables = groupInit.variables;
+        var response = await _client.PutAsJsonAsync($"{organisationUrl}/_apis/distributedtask/variablegroups/{group.id}?api-version=7.1-preview.2", group);
         if (!response.IsSuccessStatusCode)
         {
             var body = await response.Content.ReadAsStringAsync();

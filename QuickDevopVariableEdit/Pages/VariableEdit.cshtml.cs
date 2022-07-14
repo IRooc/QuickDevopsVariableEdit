@@ -108,7 +108,7 @@ public class VariableEditModel : PageModel
                 }
             }
 
-            result = await client.SaveAllVariables(groupId, group.variables!);
+            result = await client.SaveAllVariables(group);
 
             if (result)
             {
@@ -146,7 +146,7 @@ public class VariableEditModel : PageModel
                     if (group.variables.ContainsKey(kvp.Key) && !overWrite) continue;
                     group.variables[kvp.Key] = kvp.Value;
                 }
-                 await client.SaveAllVariables(group.id.ToString(), group.variables!);
+                 await client.SaveAllVariables(group);
             }
             return RedirectToPage(new { groupname = groupname });
         }
