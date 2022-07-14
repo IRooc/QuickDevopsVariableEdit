@@ -156,6 +156,44 @@ public class VariableClient
         }
         return true;
     }
+
+    public async Task<bool> CreateVariableGroup(StringValues groupName)
+    {
+        var projects = await GetProjectList();
+        var project = projects.value.FirstOrDefault(p => p.name == this.projectName);
+
+        var group = new VariableGroup();
+        group.name = groupName;
+        group.type = "Vsts";
+        group.variables = new Dictionary<string, VariableValue> {
+            {"remove-me-please", new VariableValue {
+                value ="dummy value"
+            }
+            }
+        };
+        group.variableGroupProjectReferences = new VariableGroupProjectReference[]
+        {
+            new VariableGroupProjectReference
+            {
+                name = groupName,
+                description = groupName,
+                projectReference = new Projectreference
+                {
+                    id = project.id,
+                    name = project.name
+                }
+            }
+        };
+
+        var response = await _client.PostAsJsonAsync($"{organisationUrl}/_apis/distributedtask/variablegroups?api-version=7.1-preview.2", group);
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"BODY:{body}");
+            return false;
+        }
+        return true;
+    }
 }
 
 public class DevOpsReferenceList
@@ -189,7 +227,7 @@ public class PullRequestReference
     public string? url { get; set; }
     public string? status { get; set; }
     public DevOpsUser? createdBy { get; set; }
-    public string? mergeStatus { get;set; }
+    public string? mergeStatus { get; set; }
     public DevOpsReference? repository { get; set; }
 }
 public class DevOpsUser

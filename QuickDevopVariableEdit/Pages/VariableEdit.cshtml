@@ -18,11 +18,11 @@
         page = "group";
     }
 }
-
 <div class="text-center">
     <h1 class="display-4"><a href="/SelectProject">@Model.client.organisationUrl/@Model.client.projectName</a></h1>
+
     <section class="tab">
-        @foreach (var node in Model.Variables.value)
+        @foreach (var node in Model.Variables?.value ?? new VariableGroup[] { })
         {
 
             <a href="?groupname=@node.name" class="@(groupName == node.name ? "active":"")">@node.name</a>
@@ -53,57 +53,60 @@
                         <a href="?groupname=@(groupName)&prefix=prod-" class="@(prefix == "prod-" ? "active":"")">prod</a>
                     </div>
                 }
-                <table>
-                    @foreach (var item in group.variables.OrderBy(i => i.Key))
-                    {
-                        if (StringValues.IsNullOrEmpty(prefix) || item.Key.StartsWith(prefix))
+                @if (group.variables?.Any() == true)
+                {
+                    <table>
+                        @foreach (var item in group.variables.OrderBy(i => i.Key))
                         {
-                            <tr class="@(saveKey == item.Key ? "saved":"")">
-                                <td>@item.Key</td>
-                                <td>
-                                    <form method="post" asp-page-handler="Save">
-                                        <input type="hidden" name="groupname" value="@Model.GroupName" />
-                                        <input type="hidden" name="prefix" value="@Model.Prefix" />
-                                        <input type="hidden" name="groupid" value="@group.id" />
-                                        <input type="hidden" name="Key" value="@item.Key" />
-                                        @if (item.Key.Contains("password") || item.Key.Contains("secret") || item.Key.Contains("api-key"))
-                                        {
-                                            <input type="password" name="Value" value="@(item.Value.value)" />
-                                        }
-                                        else
-                                        {
-                                            <input type="text" name="Value" value="@(item.Value.value)" />
-                                        }
-                                        <button type="submit">save</button>
-                                    </form>
-                                </td>
-                                <td>
+                            if (StringValues.IsNullOrEmpty(prefix) || item.Key.StartsWith(prefix))
+                            {
+                                <tr class="@(saveKey == item.Key ? "saved":"")">
+                                    <td>@item.Key</td>
+                                    <td>
+                                        <form method="post" asp-page-handler="Save">
+                                            <input type="hidden" name="groupname" value="@Model.GroupName" />
+                                            <input type="hidden" name="prefix" value="@Model.Prefix" />
+                                            <input type="hidden" name="groupid" value="@group.id" />
+                                            <input type="hidden" name="Key" value="@item.Key" />
+                                            @if (item.Key.Contains("password") || item.Key.Contains("secret") || item.Key.Contains("api-key"))
+                                            {
+                                                <input type="password" name="Value" value="@(item.Value.value)" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" name="Value" value="@(item.Value.value)" />
+                                            }
+                                            <button type="submit">save</button>
+                                        </form>
+                                    </td>
+                                    <td>
 
-                                    <form method="post" asp-page-handler="Delete">
-                                        <input type="hidden" name="groupname" value="@Model.GroupName" />
-                                        <input type="hidden" name="prefix" value="@Model.Prefix" />
-                                        <input type="hidden" name="groupid" value="@group.id" />
-                                        <input type="hidden" name="Key" value="@item.Key" />
-                                        <button type="submit">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
+                                        <form method="post" asp-page-handler="Delete">
+                                            <input type="hidden" name="groupname" value="@Model.GroupName" />
+                                            <input type="hidden" name="prefix" value="@Model.Prefix" />
+                                            <input type="hidden" name="groupid" value="@group.id" />
+                                            <input type="hidden" name="Key" value="@item.Key" />
+                                            <button type="submit">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
                         }
-                    }
-                    <tr>
-                        <td>New</td>
-                        <td>
-                            <form method="post" asp-page-handler="Save">
-                                <input type="hidden" name="groupname" value="@Model.GroupName" />
-                                <input type="hidden" name="prefix" value="@Model.Prefix" />
-                                <input type="hidden" name="groupid" value="@group.id" />
-                                <input type="text" name="Key" placeholder="New Key" value="" class="small" />
-                                <input type="text" name="Value" placeholder="Value" value="" class="small" />
-                                <button type="submit">save</button>
-                            </form>
-                        </td>
-                    </tr>
-                </table>
+                        <tr>
+                            <td>New</td>
+                            <td>
+                                <form method="post" asp-page-handler="Save">
+                                    <input type="hidden" name="groupname" value="@Model.GroupName" />
+                                    <input type="hidden" name="prefix" value="@Model.Prefix" />
+                                    <input type="hidden" name="groupid" value="@group.id" />
+                                    <input type="text" name="Key" placeholder="New Key" value="" class="small" />
+                                    <input type="text" name="Value" placeholder="Value" value="" class="small" />
+                                    <button type="submit">save</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                }
                 @if (groupName.ToString().EndsWith("-environments-variables"))
                 {
                     <form method="post" asp-page-handler="Copy">
@@ -113,18 +116,38 @@
                         <label>
                             Copy from prefix
                             <select name="prefixToCopy">
-                                <option value="dev-">dev</option>
-                                <option value="test-">test</option>
-                                <option value="qa-">qa</option>
-                                <option value="prod-">prod</option>
+                                <option value="dev-">dev-</option>
+                                <option value="test-">test-</option>
+                                <option value="qa-">qa-</option>
+                                <option value="prod-">prod-</option>
                             </select> into @Model.Prefix
                         </label>
                         <button type="submit">Copy</button>
                     </form>
                 }
             }
+            else
+            {
+
+            }<br/>
+                        <a asp-page-handler="Download" asp-route-groupname="@groupName" asp-route-prefix="@prefix" target="_blank">Download all settings</a><br/>
+                    <form method="post" asp-page-handler="Upload" enctype="multipart/form-data">
+                        <input type="hidden" name="groupname" value="@group.name" />
+                        Upload settings from file
+                        <input type="file" name="Settings" />
+                        <label><input type="checkbox" name="Overwrite" value="true" />Overwrite</label>
+                        <button type="submit" name="Save">Upload</button>
+                    </form>
         </section>
 
+    }
+    else
+    {
+
+        <form method="post" asp-page-handler="Create">
+            Create Library <input type="text" name="groupname" value="@Model.GroupName" />
+            <button type="submit">Create</button>
+        </form>
     }
 
 </div>
