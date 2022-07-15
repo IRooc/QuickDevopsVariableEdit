@@ -11,20 +11,16 @@ public class VariableEditModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string? GroupName { get; set; }
 
-
     [BindProperty(SupportsGet = true)]
     public string? Prefix { get; set; }
 
-
-
     public readonly VariableClient client;
+    public VariableGroupList? Variables { get; set; }
 
     public VariableEditModel(VariableClient client)
     {
         this.client = client;
     }
-
-    public VariableGroupList? Variables { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
@@ -87,7 +83,6 @@ public class VariableEditModel : PageModel
         }
         return RedirectToPage(new { groupname = GroupName, prefix = Prefix, Result = result });
     }
-
 
     public async Task<IActionResult> OnPostCopy(string prefixToCopy)
     {

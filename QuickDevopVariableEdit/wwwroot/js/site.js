@@ -1,5 +1,4 @@
-﻿
-{
+﻿{
     //remember url and key
     const gotoEditButton = document.getElementById('gotoEdit');
     if (gotoEditButton) {
@@ -16,8 +15,6 @@
         document.querySelector('input[name="accessToken"]').value = token;
     }
 }
-
-
 {
     //remove saved class
     const allSaved = document.querySelectorAll('tr.saved');
