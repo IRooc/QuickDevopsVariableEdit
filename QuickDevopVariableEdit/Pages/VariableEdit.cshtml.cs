@@ -64,6 +64,29 @@ public class VariableEditModel : PageModel
         return RedirectToPage(new { groupname = GroupName, prefix = Prefix, Result = result, Key = key });
     }
 
+    public async Task<IActionResult> OnPostSaveAll([FromBody] SaveAllModel model)
+    {
+        var groups = await client.GetVariableGroups();
+        var group = groups?.value?.FirstOrDefault(d => d.id == model.GroupId);
+
+        if (group == null || group.variables == null) return new JsonResult(new { success = false });
+
+        foreach(var keyValue in model.Variables)
+        {
+            if (group.variables.ContainsKey(keyValue.Key))
+            {
+                group.variables[keyValue.Key] = new VariableValue {  value = keyValue.Value };
+            }
+            else
+            {
+                group.variables.Add(keyValue.Key, new VariableValue { value = keyValue.Value });
+            }
+        }
+        var result = await client.SaveAllVariables(group);
+
+        return new JsonResult(new { success = result });
+    }
+
     public async Task<IActionResult> OnPostDelete()
     {
         Variables = await client.GetVariableGroups();
@@ -131,21 +154,28 @@ public class VariableEditModel : PageModel
             Variables = await client.GetVariableGroups();
             var groupname = Request.Form["groupname"];
             var group = Variables?.value?.FirstOrDefault(d => d.name == groupname);
-            
+
             using (var reader = new StreamReader(file.OpenReadStream()))
             {
                 var data = reader.ReadToEnd();
                 var dict = JsonSerializer.Deserialize<Dictionary<string, VariableValue>>(data);
-                foreach(var kvp in dict)
+                foreach (var kvp in dict)
                 {
                     if (group.variables.ContainsKey(kvp.Key) && !overWrite) continue;
                     group.variables[kvp.Key] = kvp.Value;
                 }
-                 await client.SaveAllVariables(group);
+                await client.SaveAllVariables(group);
             }
             return RedirectToPage(new { groupname = groupname });
         }
         return RedirectToPage();
+    }
+
+    public class SaveAllModel
+    {
+        public int GroupId { get; set; }
+
+        public Dictionary<string, string> Variables { get; set; }
     }
 
 }

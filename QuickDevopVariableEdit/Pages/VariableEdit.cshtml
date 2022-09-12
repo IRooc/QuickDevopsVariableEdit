@@ -70,11 +70,11 @@
                                             <input type="hidden" name="Key" value="@item.Key" />
                                             @if (item.Key.Contains("password") || item.Key.Contains("secret") || item.Key.Contains("api-key"))
                                             {
-                                                <input type="password" name="Value" value="@(item.Value.value)" />
+                                                <input type="password" name="Value" value="@(item.Value.value)" class="value"/>
                                             }
                                             else
                                             {
-                                                <input type="text" name="Value" value="@(item.Value.value)" />
+                                                <input type="text" name="Value" value="@(item.Value.value)"  class="value"/>
                                             }
                                             <button type="submit">save</button>
                                         </form>
@@ -104,6 +104,10 @@
                                     <button type="submit">save</button>
                                 </form>
                             </td>
+                        </tr>
+                        <tr>
+                            <td ></td>
+                            <td><button id="saveAll" type="button">Save All</button></td>
                         </tr>
                     </table>
                 }
