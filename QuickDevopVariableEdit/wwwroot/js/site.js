@@ -66,11 +66,13 @@
                 }
             }).then(response => response.json())
                 .then(json => {
-                    if (json.success) {
+                    if (json && json.success) {
                         document.querySelectorAll('tr').forEach(tr => {
                             tr.classList.add('saved');
                         })
                         removeAllSavedClasses();
+                    } else {
+                        alert('failed to save');
                     }
                 });
         });

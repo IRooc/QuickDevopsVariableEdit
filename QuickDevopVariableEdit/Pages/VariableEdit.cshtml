@@ -93,17 +93,18 @@
                             }
                         }
                         <tr>
-                            <td>New</td>
+                            <form method="post" asp-page-handler="Save">
                             <td>
-                                <form method="post" asp-page-handler="Save">
+                                <input type="text" name="Key" placeholder="New Key" value=""  />
+                            </td>
+                            <td>
                                     <input type="hidden" name="groupname" value="@Model.GroupName" />
                                     <input type="hidden" name="prefix" value="@Model.Prefix" />
                                     <input type="hidden" name="groupid" value="@group.id" />
-                                    <input type="text" name="Key" placeholder="New Key" value="" class="small" />
-                                    <input type="text" name="Value" placeholder="Value" value="" class="small" />
+                                    <input type="text" name="Value" placeholder="Value" value="" class="value" />
                                     <button type="submit">save</button>
-                                </form>
                             </td>
+                            </form>
                         </tr>
                         <tr>
                             <td ></td>
